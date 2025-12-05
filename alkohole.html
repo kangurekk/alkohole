@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Info Alkohole</title>
+    <link rel="icon" href="../su-ploul.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            background-color:#ffebb6;
+            color:#b00b0b;
+            font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+            padding:40px 20px;
+            line-height:1.7;
+        }
+        .container{max-width:800px;margin:0 auto}
+        h1{font-size:clamp(2.5rem,8vw,4rem);font-weight:700;margin-bottom:.5rem;letter-spacing:-.03em;text-align:center}
+        .section{margin:3rem 0;padding:2rem;background-color:rgba(176,11,11,.03);border-radius:8px}
+        .section-title{font-weight:700;margin-bottom:1rem;font-size:2rem;text-align:center}
+        .step-text{padding:1.5rem;background-color:rgba(176,11,11,.05);border-radius:8px;margin:2rem auto;max-width:800px;line-height:1.6}
+        .step-text h3{color:#b00b0b;margin-bottom:.8rem;font-size:1.25rem}
+        .etapy-buttons{display:flex;flex-direction:column;gap:1rem;align-items:center;margin-top:1.5rem}
+        .etapy-buttons button{width:75%;max-width:340px;background:linear-gradient(135deg,#b00b0b,#d61212);color:#ffebb6;border:none;padding:.9rem 1rem;font-size:1.15rem;font-weight:700;border-radius:12px;cursor:pointer;box-shadow:0 4px 12px rgba(176,11,11,.25);transition:all .22s ease}
+        .etapy-buttons button:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 6px 18px rgba(176,11,11,.32)}
+        html{scroll-behavior:smooth}
+
+        .quality{display:inline-flex;padding:.4rem .8rem;border-radius:8px;margin:.4rem 0;font-weight:600;font-size:1.2rem;color:#b00b0b;box-shadow:0 3px 8px rgba(176,11,11,.2);width:3rem;height:3rem;justify-content:center;align-items:center;margin-right:.6rem}
+
+        row{display:flex;align-items:center;gap:1rem;margin:.8rem 0}
+        .imgright {
+            float:right;
+            margin:0 0 1rem 1rem;
+            width:300px;
+            max-width:40%;
+            height:auto;
+            border-radius:8px;
+            box-shadow:0 4px 12px rgba(176,11,11,.25);
+            transition: transform 0.2s ease;
+        }
+
+        .imgright:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width:600px){.imgright{float:none;display:block;margin:0 auto 1rem auto;width:80%}}
+
+        /* LIGHTBOX: uzywamy opacity/visibility, nie display, zeby animacja tła dzialala */
+        #lightbox{
+            position:fixed;
+            inset:0;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            z-index:1000;
+            pointer-events:none; /* wylaczone, dopoki nie pokazane */
+            opacity:0;
+            visibility:hidden;
+            transition:opacity .28s ease, visibility .28s ease;
+            background: rgba(0,0,0,0); /* start przezroczyste */
+        }
+        #lightbox.show{
+            pointer-events:auto;
+            opacity:1;
+            visibility:visible;
+            background: rgba(0,0,0,0.72); /* koncowe przyciemnienie */
+        }
+        #lightbox img{
+            max-width:90%;
+            max-height:90%;
+            border-radius:8px;
+            box-shadow:0 8px 30px rgba(0,0,0,.6);
+            transform:scale(.88);
+            opacity:0;
+            transition:transform .28s ease, opacity .28s ease;
+        }
+        #lightbox.show img{
+            transform:scale(1);
+            opacity:1;
+        }
+
+        .barrel-img {
+            float: right;
+            width: 180px;        
+            max-width: 35%;
+            margin-left: 1rem;
+            margin-bottom: 0.7rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(176,11,11,.25);
+            display: block;
+            clear: right;
+            transition: transform 0.2s ease;
+        }
+
+        .barrel-img:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            .barrel-img {
+                float: none;
+                display: block;
+                margin: 0 auto 1rem auto;
+                width: 70%;
+                clear: both;
+            }
+        }
+
+        .step-text::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .barrel-buttons {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 1rem;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .barrel-buttons button {
+            background: linear-gradient(135deg, #b00b0b, #d61212);
+            color: #ffebb6;
+            border: none;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 3px 9px rgba(176,11,11,.25);
+            transition: all .2s ease;
+        }
+
+        .barrel-buttons button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 5px 14px rgba(176,11,11,.32);
+        }
+
+        .titleicons {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: nowrap;
+        }
+
+        .titleicons h1 {
+            margin: 0;
+            text-align: center;
+            white-space: nowrap;
+            font-size: clamp(2rem,5vw,4rem);
+        }
+
+        .titleicon {
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
+        }
+        .warning{font-weight:700;margin:2.5rem 0;padding:1.5rem;background-color:rgba(176,11,11,.12);border-radius:8px;text-align:center;font-size:1.1rem;letter-spacing:.01em}
+        .footer-buttons{display:flex;flex-direction:column;gap:1rem;align-items:center;margin-top:1rem}
+        .footer-buttons button{width:50%;max-width:300px;background:linear-gradient(135deg,#b00b0b,#d61212);color:#ffebb6;border-radius:12px;padding:.9rem 1rem;font-size:1rem;font-weight:700;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(176,11,11,.25)}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="titleicons">
+            <img src="img/potion1.png" class="titleicon" alt="Potion lewo">
+            <h1>ALKOHOLE - INSTRUKCJA</h1>
+            <img src="img/potion2.png" class="titleicon" alt="Potion prawo">
+        </div>
+        <div class="section">
+            <div class="section-title">Etapy</div>
+            <div class="etapy-buttons">
+                <button onclick="location.href='#gotowanie'">Gotowanie</button>
+                <button onclick="location.href='#destylacja'">Destylacja</button>
+                <button onclick="location.href='#lezakowanie'">Leżakowanie</button>
+                <button onclick="location.href='#jakosc'">Jakość</button>
+                <button onclick="location.href='#picie'">Picie i efekty</button>
+            </div>
+        </div>
+
+        <div id="gotowanie" class="step-text">
+            <h2>Gotowanie</h2>
+            <img src="img/clock.png" alt="Sprawdzanie czasu gotowania" class="imgright clickable">
+            <p>Najpierw zbierasz wszystkie potrzebne składniki w przepisie.</p>
+            <p>Umieszczasz je w kotle znajdującym się nad źródłem ciepła i gotujesz przez określony czas.</p>
+            <p>To, jak długo gotuje się już woda w kotle możesz sprawdzić klikając prawym przyciskiem myszy na kocioł trzymając w ręce zegar.</p>
+            <p>W trakcie gotowania składniki łączą się, tworząc bazę trunku, którą możesz zebrać do pustej butelki.</p>
+            <p>Im dłużej napój będzie się gotował, tym lepszy będzie jego smak i aromat, lecz zbyt długie gotowanie może spowodować pogorszenie jakości.</p>
+            <p>To pierwszy i podstawowy etap przygotowania trunku.</p>
+        </div>
+
+        <div id="destylacja" class="step-text">
+            <h2>Destylacja</h2>
+            <img src="img/brew.png" alt="Destylacja" class="imgright clickable">
+            <p>Nie każdy trunek wymaga destylacji, ale jeśli przepis ją przewiduje, jest to krok wzmacniający alkohol i oczyszczający napój z niepożądanych aromatów.</p>
+            <p>Destyluje się za pomocą statywu alchemicznego, w którym umieszcza się jasnopył oraz gotowaną wcześniej bazę trunku.</p>
+            <p>Proces może wymagać powtórzenia kilka razy - każdy przebieg destylacji zwiększa moc alkoholu.</p>
+            <p>Ważne jest dokładne przestrzeganie przepisu, aby uzyskać jak najlepszą jakość.</p>
+        </div>
+
+        <div id="lezakowanie" class="step-text">
+            <h2>Leżakowanie</h2>
+            <img src="img/barrel1.png" alt="Destylacja" class="barrel-img clickable">
+            <img src="img/barrel2.png" alt="Destylacja" class="barrel-img clickable">
+            <p>Po ugotowaniu i ewentualnej destylacji otrzymany trunek wsadzasz do beczki wykonanej z określonego w przepisie rodzaju drewna.</p>
+            <p>Beczki nadają trunkowi charakterystyczny aromat, smak, i kolor.</p>
+            <p>Czas leżakowania wpływa na głębię smaku - im dłużej napój dojrzewa, tym staje się bardziej wyrazisty i aromatyczny.</p>
+            <p>Niektóre trunki wymagają bardzo długiego leżakowania.</p>
+            <p>&nbsp</p><p>&nbsp</p>
+            <h3>Budowa beczek</h3>
+            <div class="barrel-buttons">
+            <button onclick="location.href='beczki.html#mala-beczka'">Jak zbudować małą beczkę?</button>
+            <button onclick="location.href='beczki.html#duza-beczka'">Jak zbudować dużą beczkę?</button>
+            </div>
+        </div>
+
+        <div id="jakosc" class="step-text">
+            <h2>Jakość</h2>
+            <p>Po zakończeniu leżakowania sprawdzasz jakość trunku. Jakość dzieli się na trzy poziomy:</p>
+            <div style="height:8px"></div>
+            <div class="row">
+                <div class="quality">+</div>
+                <span>Słaby trunek - gorszy smak, mniejsze efekty</span>
+            </div>
+            <div class="row">
+                <div class="quality">++</div>
+                <span>Normalny trunek - standardowy smak i efekty</span>
+            </div>
+            <div class="row">
+                <div class="quality">+++</div>
+                <span>Doskonały trunek - najlepszy smak i efekty</span>
+            </div>
+        </div>
+
+        <div id="picie" class="step-text">
+            <h2>Picie i efekty</h2>
+            <img src="img/drunkenness.png" alt="Poziom napojenia" class="imgright clickable">
+            <p>Gdy wypijesz trunek, odczuwasz jego efekty, które zależą od jakości napoju.</p>
+            <p>Mogą to być np. wzmocnienie siły, przyspieszenie regeneracji, ochrona przed ogniem lub specjalne bonusy zależne od przepisu.</p>
+            <div class="warning">Pamiętaj, że picie zbyt dużej ilości alkoholu może przynieść negatywne skutki, dlatego kontroluj ilość spożywanego trunku. Eksperymentuj z różnymi recepturami, aby odkryć ich pełne możliwości i efekty w grze!</div>
+        </div>
+
+        <div class="footer-buttons">
+            <button onclick="location.href='https://su.ploul.pl/mc'">Strona główna</button>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX -->
+    <div id="lightbox" aria-hidden="true">
+        <img id="lightbox-img" src="" alt="">
+    </div>
+
+    <script>
+    // skrypt dziala po wczytaniu dokumnetu (skrypt jest po body wiec DOM jest juz dostepny)
+    (function(){
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+        // jesli nie ma zadnych .clickable nic sie nie stanie
+        document.querySelectorAll('.clickable').forEach(img => {
+            img.addEventListener('click', (e) => {
+                // ustawiamy src i pokazujemy modal - najpierw ustaw src zeby obrazek byl dostepny
+                lightboxImg.src = img.src;
+                // dodajemy klase show (opacity/visibility animuja)
+                lightbox.classList.add('show');
+                lightbox.setAttribute('aria-hidden','false');
+                // ustaw fokus na obrazek, zeby ESC dzialal natychmiast
+                lightboxImg.focus && lightboxImg.focus();
+            });
+        });
+
+        // klik na tlo (ale nie na sam obrazek) zamyka modal
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        // ESC zamyka
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightbox.classList.contains('show')) {
+                closeLightbox();
+            }
+        });
+
+        function closeLightbox(){
+            // usuwamy klase show - animacja opacity/transform
+            lightbox.classList.remove('show');
+            lightbox.setAttribute('aria-hidden','true');
+            // po czasie animacji czyścimy src (zapobiega pobieraniu zasobow)
+            setTimeout(() => {
+                lightboxImg.src = '';
+            }, 300);
+        }
+
+        // expose for inline usage if needed
+        window.closeLightbox = closeLightbox;
+    })();
+    </script>
+</body>
+</html>

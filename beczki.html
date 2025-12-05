@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Budowa Beczek</title>
+    <link rel="icon" href="../su-ploul.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            background-color:#ffebb6;
+            color:#b00b0b;
+            font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+            padding:40px 20px;
+            line-height:1.7;
+        }
+        .container{max-width:800px;margin:0 auto}
+        h1{font-size:clamp(2.5rem,8vw,4rem);font-weight:700;margin-bottom:.5rem;letter-spacing:-.03em;text-align:center}
+        .section{margin:3rem 0;padding:2rem;background-color:rgba(176,11,11,.03);border-radius:8px}
+        .section-title{font-weight:700;margin-bottom:1rem;font-size:2rem;text-align:center}
+        .step-text{padding:1.5rem;background-color:rgba(176,11,11,.05);border-radius:8px;margin:2rem auto;max-width:800px;line-height:1.6}
+        .step-text h3{color:#b00b0b;margin-bottom:.8rem;font-size:1.25rem}
+        .etapy-buttons{display:flex;flex-direction:column;gap:1rem;align-items:center;margin-top:1.5rem}
+        .etapy-buttons button{width:75%;max-width:340px;background:linear-gradient(135deg,#b00b0b,#d61212);color:#ffebb6;border:none;padding:.9rem 1rem;font-size:1.15rem;font-weight:700;border-radius:12px;cursor:pointer;box-shadow:0 4px 12px rgba(176,11,11,.25);transition:all .22s ease}
+        .etapy-buttons button:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 6px 18px rgba(176,11,11,.32)}
+        html{scroll-behavior:smooth}
+
+        .quality{display:inline-flex;padding:.4rem .8rem;border-radius:8px;margin:.4rem 0;font-weight:600;font-size:1.2rem;color:#b00b0b;box-shadow:0 3px 8px rgba(176,11,11,.2);width:3rem;height:3rem;justify-content:center;align-items:center;margin-right:.6rem}
+
+        row{display:flex;align-items:center;gap:1rem;margin:.8rem 0}
+        .imgright{float:right;margin:0 0 1rem 1rem;width:300px;max-width:40%;height:auto;border-radius:8px;box-shadow:0 4px 12px rgba(176,11,11,.25)}
+        @media (max-width:600px){.imgright{float:none;display:block;margin:0 auto 1rem auto;width:80%}}
+
+        /* LIGHTBOX: uzywamy opacity/visibility, nie display, zeby animacja tła dzialala */
+        #lightbox{
+            position:fixed;
+            inset:0;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            z-index:1000;
+            pointer-events:none; /* wylaczone, dopoki nie pokazane */
+            opacity:0;
+            visibility:hidden;
+            transition:opacity .28s ease, visibility .28s ease;
+            background: rgba(0,0,0,0); /* start przezroczyste */
+        }
+        #lightbox.show{
+            pointer-events:auto;
+            opacity:1;
+            visibility:visible;
+            background: rgba(0,0,0,0.72); /* koncowe przyciemnienie */
+        }
+        #lightbox img{
+            max-width:90%;
+            max-height:90%;
+            border-radius:8px;
+            box-shadow:0 8px 30px rgba(0,0,0,.6);
+            transform:scale(.88);
+            opacity:0;
+            transition:transform .28s ease, opacity .28s ease;
+        }
+        #lightbox.show img{
+            transform:scale(1);
+            opacity:1;
+        }
+
+        .barrel-img {
+            width: 180px;        
+            max-width: 35%;
+            margin: 1rem auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(176,11,11,.25);
+            display: block;
+            clear: both;
+        }
+
+        .step-text p {
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .barrel-img {
+                width: 70%;
+            }
+        }
+
+        .step-text::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .barrel-buttons {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 1rem;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .barrel-buttons button {
+            background: linear-gradient(135deg, #b00b0b, #d61212);
+            color: #ffebb6;
+            border: none;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 3px 9px rgba(176,11,11,.25);
+            transition: all .2s ease;
+        }
+
+        .barrel-buttons button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 5px 14px rgba(176,11,11,.32);
+        }
+        .warning {
+            font-weight:700;
+            margin:2.5rem 0;
+            padding:1.5rem;
+            background-color:rgba(176,11,11,.12);
+            border-radius:8px;
+            text-align:center;
+            font-size:1.1rem;
+            letter-spacing:.01em
+        }
+        .footer-buttons {
+            display:flex;
+            flex-wrap:wrap;
+            justify-content: center;
+            gap:1rem;
+            margin-top:1rem;
+        }
+        .footer-buttons button {
+            width:200px;
+            max-width:300px;
+            background:linear-gradient(135deg,#b00b0b,#d61212);
+            color:#ffebb6;
+            border-radius:12px;
+            padding:.9rem 1rem;
+            font-size:1rem;
+            font-weight:700;
+            border:none;
+            cursor:pointer;
+            box-shadow:0 4px 12px rgba(176,11,11,.25);
+            transition: all .2s ease;
+        }
+        .footer-buttons button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 14px rgba(176,11,11,.32);
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+            font-style: italic;
+            color:#b00b0b;
+        }
+
+        .step-img {
+            display: block;      
+            width: 150px;           
+            max-width: 100%;         
+            margin: 0.5rem auto 1rem auto; 
+            border-radius: 6px;
+            box-shadow: 0 3px 8px rgba(176,11,11,.2);
+            transition: transform 0.2s ease;
+        }
+
+        .step-img:hover {
+            transform: scale(1.05);
+        }
+
+        .step-text h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 2.6rem;
+        }
+
+        .barrel-final {
+            display: block;       
+            width: 250px;         
+            max-width: 90%;      
+            margin: 1rem auto;  
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(176,11,11,.25);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BUDOWA BECZEK</h1>
+        <div class="warning">
+            <p>Beczki mogą być budowane z tych rodzajów budulca:</p>
+            <ul>
+                <li>Drewno Brzozowe</li>
+                <li>Drewno Dębowe</li>
+                <li>Drewno Dżunglowe</li>
+                <li>Drewno Świerkowe</li>
+                <li>Drewno Akacjowe</li>
+                <li>Drewno Ciemnodębowe</li>
+                <li>Drewno Szkarłatne</li>
+                <li>Drewno Spaczone</li>
+                <li>Drewno Namorzynowe</li>
+                <li>Drewno Wiśniowe</li>
+                <li>Drewno Bambusowe</li>
+                <li>Drewno Bladodębowe</li>
+                <li>Cięta Miedź</li>
+            </ul>
+            <p style="font-size:0.9rem; font-style: italic;">W przykładach użyte zostało drewno dębowe, lecz budowa nie różni się dla innych rodzajów budulca</p>
+        </div>
+        <div id="mala-beczka" class="step-text">
+            <h2>Mała Beczka</h2>
+            <img src="img/barrel1.png" alt="Sprawdzanie czasu gotowania" class="barrel-final clickable">
+            <p><strong>Krok 1.</strong> Połóż dwa bloki tymczasowe obok siebie i dzięki nim postaw dwa "odwrócone" schodki obok siebie klikając na górną połowę tymczasowego bloku.</p>
+            <img src="img/mala1.png" alt="Krok 1" class="step-img clickable">
+            <p><strong>Krok 2.</strong> Zniszcz bloki tymczasowe. Przy postawionych schodkach, z drugiej strony, postaw dwa kolejne, również "odwrócone".</p>
+            <img src="img/mala2.png" alt="Krok 2" class="step-img clickable">
+            <p><strong>Krok 3.</strong> Na stworzonej bazie postaw schodki tak, aby całość tworzyła znak "+".</p>
+            <img src="img/mala3.png" alt="Krok 3" class="step-img clickable">
+            <p><strong>Krok 4.</strong> Podejdź od przedniej lub tylniej strony plusa i na schodku znajdującym się w prawym dolnym rogu postaw tabliczkę z napisem "barrel".</p>
+            <img src="img/mala4.png" alt="Krok 4" class="step-img clickable">
+            <p style="font-size:0.9rem; text-align: center;">Jeżeli beczka została zbudowana w prawidłowy sposób, na czacie pojawi się wiadomość: "Barrel created."</p>
+            <p style="text-align: center;">Gotowe!</p>
+        </div>
+
+        <div id="duza-beczka" class="step-text">
+            <h2>Duża Beczka</h2>
+            <img src="img/barrel2.png" alt="Duża Beczka" class="barrel-final clickable">
+            <p><strong>Krok 1.</strong> Połóż dwa płotki obok siebie w linii prostej zachowując jeden blok odstępu</p>
+            <img src="img/duza1.png" alt="Krok 1" class="step-img clickable">
+            <p><strong>Krok 2.</strong> Postaw blok tymczasowy pomiędzy nimi. Na nim, postaw blok, a następnie "odwrócone" schodki po jego obu stronach.</p>
+            <img src="img/duza2.png" alt="Krok 2" class="step-img clickable">
+            <p><strong>Krok 3.</strong> Zniszcz blok tymczasowy. Na schodkach i bloku dobuduj kolejne piętro bloków, a na samym końcu, dodaj kolejny blok na środku.</p>
+            <img src="img/duza3.png" alt="Krok 3" class="step-img clickable">
+            <p><strong>Krok 4.</strong> Przedłuż powstały znak "+" tak, aby miał on razem cztery bloki długości. Pamiętaj, aby środek również wypełniony był blokami.</p>
+            <img src="img/duza4.png" alt="Krok 4" class="step-img clickable">
+            <p><strong>Krok 5.</strong>. Na dolnej części plusa, dodaj "odwrócone" schodki po całej długości. "Normalnie" obrócone schodki natomiast dodaj do części górnej. Proces powtórz po drugiej stronie.</p>
+            <img src="img/duza5.png" alt="Krok 5" class="step-img clickable">
+            <p><strong>Krok 6.</strong> Na tym końcu, który nie posiada "nóżek", dodaj je tak, jak w kroku 1.</p>
+            <img src="img/duza6.png" alt="Krok 6" class="step-img clickable">
+            <p><strong>Krok 7.</strong> Na przedniej lub tylniej stronie dodaj "kran" na bloku znajdującym się pomiędzy "nóżkami".</p>
+            <img src="img/duza7.png" alt="Krok 7" class="step-img clickable">
+            <p><strong>Krok 8.</strong> Na bloku znajdującym się dwa bloki nad "kranem" postaw tabliczkę z napisem "barrel".</p>
+            <img src="img/duza8.png" alt="Krok 8" class="step-img clickable">
+            <p style="font-size:0.9rem; text-align: center;">Jeżeli beczka została zbudowana w prawidłowy sposób, na czacie pojawi się wiadomość: "Barrel created."</p>
+            <p style="text-align: center;">Gotowe!</p>
+        </div>
+        
+        <div class="footer-buttons"> 
+            <button onclick="location.href='https://su.ploul.pl/mc'">Strona główna</button> 
+            <button onclick="location.href='alkohole.html#lezakowanie'">Powrót</button>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX -->
+    <div id="lightbox" aria-hidden="true">
+        <img id="lightbox-img" src="" alt="">
+    </div>
+
+    <script>
+    // skrypt dziala po wczytaniu dokumnetu (skrypt jest po body wiec DOM jest juz dostepny)
+    (function(){
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+        // jesli nie ma zadnych .clickable nic sie nie stanie
+        document.querySelectorAll('.clickable').forEach(img => {
+            img.addEventListener('click', (e) => {
+                // ustawiamy src i pokazujemy modal - najpierw ustaw src zeby obrazek byl dostepny
+                lightboxImg.src = img.src;
+                // dodajemy klase show (opacity/visibility animuja)
+                lightbox.classList.add('show');
+                lightbox.setAttribute('aria-hidden','false');
+                // ustaw fokus na obrazek, zeby ESC dzialal natychmiast
+                lightboxImg.focus && lightboxImg.focus();
+            });
+        });
+
+        // klik na tlo (ale nie na sam obrazek) zamyka modal
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        // ESC zamyka
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightbox.classList.contains('show')) {
+                closeLightbox();
+            }
+        });
+
+        function closeLightbox(){
+            // usuwamy klase show - animacja opacity/transform
+            lightbox.classList.remove('show');
+            lightbox.setAttribute('aria-hidden','true');
+            // po czasie animacji czyścimy src (zapobiega pobieraniu zasobow)
+            setTimeout(() => {
+                lightboxImg.src = '';
+            }, 300);
+        }
+
+        // expose for inline usage if needed
+        window.closeLightbox = closeLightbox;
+    })();
+    </script>
+</body>
+</html>
